@@ -8,10 +8,14 @@
   </head>
   <body>
     <h1>World</h1>
-    <div id="controls"></div>
     <canvas id="myCanvas"></canvas>
+    <div id="controls">
+      <button onclick="dispose()">Delete</button>
+      <button onclick="save()">Save</button>
+    </div>
 
     <script src="js/graphEditor.js"></script>
+    <script src="js/viewport.js"></script>
     <script src="js/math/utils.js"></script>
     <script src="js/math/graph.js"></script>
     <script src="js/primitives/point.js"></script>
@@ -21,26 +25,27 @@
       myCanvas.height = 550;
 
       const ctx = myCanvas.getContext("2d");
+      const graphStr = localStorage.getItem("graph");
+      const graphInfo = graphStr ? JSON.parse(graphStr) : null;
 
-      const p1 = new Point(200, 200);
-      const p2 = new Point(300, 150);
-      const p3 = new Point(400, 200);
-      const p4 = new Point(350, 100);
-
-      const s1 = new Segment(p1, p2);
-      const s2 = new Segment(p1, p3);
-      const s3 = new Segment(p1, p4);
-      const s4 = new Segment(p2, p3);
-
-      const graph = new Graph([p1, p2, p3, p4], [s1, s2, s3, s4]);
-      const graphEditor = new GraphEditor(myCanvas, graph);
+      const graph = graphInfo ? Graph.load(graphInfo) : new Graph();
+      const viewport = new ViewPort(myCanvas);
+      const graphEditor = new GraphEditor(viewport, graph);
 
       animate();
 
       function animate() {
-        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        viewport.reset();
         graphEditor.display();
         requestAnimationFrame(animate);
+      }
+
+      function dispose() {
+        graphEditor.dispose();
+      }
+      function save() {
+        localStorage.clear();
+        localStorage.setItem("graph", JSON.stringify(graph));
       }
     </script>
   </body>
