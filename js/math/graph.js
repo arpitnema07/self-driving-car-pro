@@ -48,7 +48,6 @@ class Graph {
         segs.push(seg);
       }
     }
-    console.log(segs);
     return segs;
   }
 
