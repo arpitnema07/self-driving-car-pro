@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>World</h1>
+    <h1>World Editor</h1>
     <canvas id="myCanvas"></canvas>
     <div id="controls">
       <button onclick="dispose()">Delete</button>
@@ -15,11 +15,14 @@
     </div>
 
     <script src="js/graphEditor.js"></script>
+    <script src="js/world.js"></script>
     <script src="js/viewport.js"></script>
     <script src="js/math/utils.js"></script>
     <script src="js/math/graph.js"></script>
     <script src="js/primitives/point.js"></script>
     <script src="js/primitives/segment.js"></script>
+    <script src="js/primitives/polygon.js"></script>
+    <script src="js/primitives/envelope.js"></script>
     <script>
       myCanvas.width = 600;
       myCanvas.height = 550;
@@ -29,6 +32,8 @@
       const graphInfo = graphStr ? JSON.parse(graphStr) : null;
 
       const graph = graphInfo ? Graph.load(graphInfo) : new Graph();
+      const world = new World(graph, 100, 11);
+
       const viewport = new ViewPort(myCanvas);
       const graphEditor = new GraphEditor(viewport, graph);
 
@@ -36,6 +41,8 @@
 
       function animate() {
         viewport.reset();
+        world.generate();
+        world.draw(ctx);
         graphEditor.display();
         requestAnimationFrame(animate);
       }
